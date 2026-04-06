@@ -29,7 +29,7 @@ module.exports = {
             url: 'https://www.kimi.com',
             enabled: true,
             maxSessions: 2, // 最大并发浏览器标签页
-            sessionTimeout: 10 * 60 * 1000, // 10 分钟无活动回收
+            sessionTimeout: 30 * 60 * 1000, // 10 分钟无活动回收
             features: [
                 { id: 'chat', name: '智能对话', description: '与 Kimi 进行对话' },
                 {
@@ -49,19 +49,13 @@ module.exports = {
             url: 'https://gemini.google.com',
             enabled: true,
             maxSessions: 2,
-            sessionTimeout: 10 * 60 * 1000,
+            sessionTimeout: 30 * 60 * 1000,
             features: [
                 {
                     id: 'chat',
                     name: '智能对话',
                     description: '与 Gemini Ultra 进行对话',
                 },
-                {
-                    id: 'image-gen',
-                    name: '图片生成',
-                    description: '用 Gemini 生成图片',
-                },
-                { id: 'code', name: '代码执行', description: 'Gemini 代码执行环境' },
             ],
         },
     },
@@ -69,6 +63,6 @@ module.exports = {
     // 队列配置
     queue: {
         maxWaiting: 10, // 最大排队数
-        requestTimeout: 15 * 60 * 1000, // 单次请求超时 5 分钟
+        requestTimeout: 30 * 60 * 1000, // 单次请求超时 5 分钟
     },
 };

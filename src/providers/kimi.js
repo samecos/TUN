@@ -378,7 +378,7 @@ class KimiProvider {
         const featureUrls = {
             chat: 'https://www.kimi.com',
             'agent-website': 'https://www.kimi.com/websites',
-            'agent-ppt': 'https://www.kimi.com/ppt',
+            'agent-ppt': 'https://www.kimi.com/slides',
             'agent-doc': 'https://www.kimi.com/docs',
             'agent-sheet': 'https://www.kimi.com/sheets',
             'agent-research': 'https://www.kimi.com/research',
