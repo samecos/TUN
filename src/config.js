@@ -69,6 +69,6 @@ module.exports = {
   // 队列配置
   queue: {
     maxWaiting: 10, // 最大排队数
-    requestTimeout: 5 * 60 * 1000, // 单次请求超时 5 分钟
+    requestTimeout: 15 * 60 * 1000, // 单次请求超时 5 分钟
   },
 };

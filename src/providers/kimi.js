@@ -164,23 +164,69 @@ class KimiProvider {
   /**
    * 从原始数据中提取 JSON 对象
    * Kimi 的协议是长度前缀字节 + JSON，我们用花括号匹配来提取
+   * 
+   * 关键：必须感知 JSON 字符串字面量（"..." 内部的 { } 要忽略），
+   * 否则 Markdown 代码块等内容中的花括号会打乱计数，导致后续
+   * 所有消息都无法解析，表现为界面卡住。
    */
   extractJSON(text) {
     const results = [];
-    let depth = 0;
-    let start = -1;
+    let i = 0;
 
-    for (let i = 0; i < text.length; i++) {
-      const ch = text[i];
-      if (ch === '{') {
-        if (depth === 0) start = i;
-        depth++;
-      } else if (ch === '}') {
-        depth--;
-        if (depth === 0 && start >= 0) {
-          results.push(text.substring(start, i + 1));
-          start = -1;
+    while (i < text.length) {
+      // 寻找 JSON 对象的起始 {
+      if (text[i] !== '{') {
+        i++;
+        continue;
+      }
+
+      let depth = 0;
+      let inString = false;
+      let escaped = false;
+      const start = i;
+
+      for (let j = i; j < text.length; j++) {
+        const ch = text[j];
+
+        if (escaped) {
+          // 前一个字符是 \，当前字符被转义，跳过
+          escaped = false;
+          continue;
         }
+
+        if (inString) {
+          // 在字符串内部：只关心 \ 和 "
+          if (ch === '\\') {
+            escaped = true;
+          } else if (ch === '"') {
+            inString = false;
+          }
+          continue;
+        }
+
+        // 在字符串外部
+        if (ch === '"') {
+          inString = true;
+        } else if (ch === '{') {
+          depth++;
+        } else if (ch === '}') {
+          depth--;
+          if (depth === 0) {
+            results.push(text.substring(start, j + 1));
+            i = j + 1;
+            break;
+          }
+        }
+
+        // 到达末尾仍未闭合 — 跳过此 { 防止死循环
+        if (j === text.length - 1 && depth !== 0) {
+          i = start + 1;
+        }
+      }
+
+      // 安全保障：如果内层循环没有推进 i，手动推进防止死循环
+      if (i === start) {
+        i++;
       }
     }
 
